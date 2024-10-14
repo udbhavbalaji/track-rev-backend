@@ -32,7 +32,7 @@
     "paths": {
       "@services/*": ["src/services/*"],
       "@routes/*": ["src/routes/*"],
-      "@app-types": ["src/types/*"],
+      "@app-types/*": ["src/types/*"],
       "@data/*": ["src/data/*"],
       "@utils/*": ["src/utils/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
