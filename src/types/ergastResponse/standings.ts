@@ -1,4 +1,4 @@
-import { Constructor, Driver } from "./primitive";
+import { Constructor, Driver } from "@app-types/ergastResponse/primitive";
 
 // Type declarations for standings objects
 
@@ -34,6 +34,7 @@ export interface ConstructorStanding extends StandingsEntry {
 
 export interface DriverStanding extends StandingsEntry {
   Driver: Driver;
+  Constructors: Constructor[];
 }
 
 export type Standing = ConstructorStandings | DriverStandings;

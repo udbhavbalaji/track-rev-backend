@@ -1,5 +1,10 @@
 // Type declarations for the standings responses to be given by our endpoints
 
+// import {
+//   ConstructorType,
+//   DriverType,
+// } from "@app-types/trackRevRequest/primitive";
+
 interface StandingBodyResponseType {
   season: string;
   round: number;
@@ -32,4 +37,8 @@ export interface DriverStandingType extends StandingEntryType {
   code: string;
   driverName: string;
   driverNationality: string;
+  constructorId: string;
+  constructorName: string;
+  constructorNationality: string;
+  // Constructor: ConstructorType;
 }

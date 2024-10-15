@@ -1,13 +1,27 @@
+import { QualifyingResult } from "@app-types/ergastResponse/results/qualifying";
+import { RaceResult } from "@app-types/ergastResponse/results/race";
+import { SprintResult } from "@app-types/ergastResponse/results/sprint";
+import { RaceSchedule } from "@app-types/ergastResponse/schedule";
 import {
   ConstructorStandings,
   DriverStandings,
-} from "@app-types/ergastResponseTypes";
+} from "@app-types/ergastResponse/standings";
+import { SessionTimingType } from "@app-types/trackRevRequest/primitive";
+import {
+  QualifyingResultEntryType,
+  QualifyingResultType,
+} from "@app-types/trackRevRequest/results/qualifying";
+import {
+  RaceResultEntryType,
+  RaceResultType,
+} from "@app-types/trackRevRequest/results/race";
+import { RaceScheduleType } from "@app-types/trackRevRequest/schedule";
 import {
   ConstructorStandingsResponse,
   ConstructorStandingType,
   DriverStandingsResponse,
   DriverStandingType,
-} from "@app-types/trackRevRequestTypes";
+} from "@app-types/trackRevRequest/standings";
 
 export const convertConstructorStandings = (
   data: ConstructorStandings
@@ -22,7 +36,6 @@ export const convertConstructorStandings = (
         constructorName: item.Constructor.name,
         constructorNationality: item.Constructor.nationality,
       };
-      // standingsData.push(obj);
       return obj;
     });
   const transformedObject: ConstructorStandingsResponse = {
@@ -46,6 +59,9 @@ export const convertDriverStandings = (
       code: item.Driver.code,
       driverName: `${item.Driver.givenName} ${item.Driver.familyName}`,
       driverNationality: item.Driver.nationality,
+      constructorId: item.Constructors[0].constructorId,
+      constructorName: item.Constructors[0].name,
+      constructorNationality: item.Constructors[0].nationality,
     };
     return obj;
   });
@@ -57,4 +73,115 @@ export const convertDriverStandings = (
   };
 
   return transformedObject;
+};
+
+export const convertSeasonSchedule = (
+  data: RaceSchedule[]
+): RaceScheduleType[] => {
+  const scheduleData: RaceScheduleType[] = data.map((item) => {
+    const raceSession: SessionTimingType = {
+      date: item.date,
+      time: item.time,
+    };
+    const obj: RaceScheduleType = {
+      season: item.season,
+      round: parseInt(item.round),
+      raceName: item.raceName,
+      circuitName: item.Circuit.circuitName,
+      FirstPractice: item.FirstPractice,
+      SecondPractice: item.SecondPractice,
+      ThirdPractice: item.ThirdPractice,
+      SprintQualifying: item.SprintQualifying,
+      Sprint: item.Sprint,
+      Qualifying: item.Qualifying,
+      Race: raceSession,
+    };
+    return obj;
+  });
+  return scheduleData;
+};
+
+export const convertRaceResult = (data: RaceResult): RaceResultType => {
+  const processedResultEntries = data.Results.map((item) => {
+    const obj: RaceResultEntryType = {
+      driverNumber: parseInt(item.Driver.permanentNumber),
+      position: parseInt(item.position),
+      driverName: `${item.Driver.givenName} ${item.Driver.familyName}`,
+      driverCode: item.Driver.code,
+      constructorId: item.Constructor.constructorId,
+      constructorName: item.Constructor.name,
+      grid: parseInt(item.grid),
+      laps: parseInt(item.laps),
+      status: item.status,
+      FastestLap: {
+        lap: parseInt(item.FastestLap?.lap),
+        lapTime: item.FastestLap?.Time.time,
+      },
+    };
+    return obj;
+  });
+  const processedResult: RaceResultType = {
+    season: data.season,
+    round: parseInt(data.round),
+    raceName: data.raceName,
+    circuitName: data.Circuit.circuitName,
+    Results: processedResultEntries,
+  };
+  return processedResult;
+};
+
+export const convertQualifyingResult = (
+  data: QualifyingResult
+): QualifyingResultType => {
+  const processedResultEntries = data.QualifyingResults.map((item) => {
+    const obj: QualifyingResultEntryType = {
+      driverNumber: parseInt(item.Driver.permanentNumber),
+      position: parseInt(item.position),
+      driverName: `${item.Driver.givenName} ${item.Driver.familyName}`,
+      driverCode: item.Driver.code,
+      constructorId: item.Constructor.constructorId,
+      constructorName: item.Constructor.name,
+      Q1: item.Q1,
+      Q2: item.Q2,
+      Q3: item.Q3,
+    };
+    return obj;
+  });
+  const processedResult: QualifyingResultType = {
+    season: data.season,
+    round: parseInt(data.round),
+    raceName: data.raceName,
+    circuitName: data.Circuit.circuitName,
+    Results: processedResultEntries,
+  };
+  return processedResult;
+};
+
+export const convertSprintResult = (data: SprintResult): RaceResultType => {
+  const processedResultEntries = data.SprintResults.map((item) => {
+    const obj: RaceResultEntryType = {
+      driverNumber: parseInt(item.Driver.permanentNumber),
+      position: parseInt(item.position),
+      driverName: `${item.Driver.givenName} ${item.Driver.familyName}`,
+      driverCode: item.Driver.code,
+      constructorId: item.Constructor.constructorId,
+      constructorName: item.Constructor.name,
+      grid: parseInt(item.grid),
+      laps: parseInt(item.laps),
+      status: item.status,
+      FastestLap: {
+        lap: parseInt(item.FastestLap?.lap),
+        lapTime: item.FastestLap?.Time.time,
+      },
+    };
+    return obj;
+  });
+  const processedResult: RaceResultType = {
+    season: data.season,
+    round: parseInt(data.round),
+    raceName: data.raceName,
+    circuitName: data.Circuit.circuitName,
+    Results: processedResultEntries,
+  };
+  return processedResult;
 };
